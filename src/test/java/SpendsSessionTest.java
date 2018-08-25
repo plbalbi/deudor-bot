@@ -9,6 +9,7 @@ class SpendsSessionTest {
 
 	private SpendsSession spendsSession;
 	private String pablo = "pablo";
+	private String juan = "juan", teo = "teo";
 
 	@BeforeEach
 	void setUp() {
@@ -51,7 +52,6 @@ class SpendsSessionTest {
 
 	@Test
 	void testPersonsBalancesEndCorrectlyWhenEndingSessionWithOnePayingAll() {
-		String juan = "juan", teo = "teo";
 		spendsSession.spend(juan, 80);
 		spendsSession.spend(pablo,150);
 		spendsSession.spend(teo,95);
@@ -60,13 +60,45 @@ class SpendsSessionTest {
 
 		List<Debt> debts = spendsSession.end();
 
+		assertEquals(debts.size(), 2);
+		assertTrue(debts.contains(new Debt(pablo, juan, 150.0f)));
+		assertTrue(debts.contains(new Debt(teo, juan, 95.0f)));
+	}
+
+	@Test
+	void testDebtsAreBalancedCorrectlyWhenNoDebtSplitted() {
+		spendsSession.spend(juan, 80);
+		spendsSession.spend(pablo,150);
+		spendsSession.spend(teo,95);
+
+		spendsSession.pay(juan,200);
+		spendsSession.pay(pablo,125);
+
+		List<Debt> debts = spendsSession.end();
+
 		for (Debt debt : debts) {
 			System.out.println(debt.toString());
 		}
 
 		assertEquals(debts.size(), 2);
-		assertTrue(debts.contains(new Debt(pablo, juan, 150.0f)));
+		assertTrue(debts.contains(new Debt(pablo, juan, 25.0f)));
 		assertTrue(debts.contains(new Debt(teo, juan, 95.0f)));
+	}
+
+	@Test
+	void testDebtsAreBalancedCorrectlyWhenADebtIsSplitted() {
+		spendsSession.spend(juan, 80);
+		spendsSession.spend(pablo,150);
+		spendsSession.spend(teo,95);
+
+		spendsSession.pay(juan,90);
+		spendsSession.pay(pablo,245);
+
+		List<Debt> debts = spendsSession.end();
+
+		assertEquals(debts.size(), 2);
+		assertTrue(debts.contains(new Debt(teo, juan, 10f)));
+		assertTrue(debts.contains(new Debt(teo, juan, 85f)));
 	}
 
 }
