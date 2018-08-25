@@ -1,12 +1,19 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class SpendsSession {
+
+	private Map<String, Float> spendsList = new HashMap<String, Float>();
+
 	public SpendsSession() {
 	}
 
 	public boolean isClean() {
-		return true;
+		return spendsList.isEmpty();
 	}
 
 	public void spend(String aName, float anAmount) {
+		spendsList.put(aName, anAmount);
 	}
 
 	public float getSpendsOf(String aName) {
