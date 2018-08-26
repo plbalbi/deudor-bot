@@ -41,8 +41,7 @@ public class SpendsSession {
 		});
 
 		// Fill the payees balance in a greedy way
-		// TODO: Sort the debtors in a decreasing manner, in order to make
-		// the ones that owe less, make just one transaction
+		// TODO: Sort the debtors in a decreasing manner, in order to make the ones that owe less, make just one transaction
 
 		while (!payees.empty()) {
 			Tuple<String,Float> payee = payees.pop();
