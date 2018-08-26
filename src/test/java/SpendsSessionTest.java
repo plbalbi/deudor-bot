@@ -98,6 +98,6 @@ class SpendsSessionTest {
 
 		assertEquals(debts.size(), 2);
 		assertTrue(debts.contains(new Debt(teo, juan, 10f)));
-		assertTrue(debts.contains(new Debt(teo, juan, 85f)));
+		assertTrue(debts.contains(new Debt(teo, pablo, 85f)));
 	}
 }

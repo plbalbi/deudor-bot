@@ -54,7 +54,7 @@ public class SpendsSession {
 					payee.second -= debtor.second;
 					debts.add(new Debt(debtor.first, payee.first, debtor.second));
 				} else if (debtor.second > payee.second) {
-					debts.add(new Debt(debtor.first, payee.first, debtor.second - payee.second));
+					debts.add(new Debt(debtor.first, payee.first, payee.second));
 					// debtor has more money to pay others
 					debtor.second -= payee.second;
 					debtors.push(debtor);
