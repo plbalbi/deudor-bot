@@ -1,3 +1,5 @@
+import domain.Debt;
+import domain.SpendsSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
