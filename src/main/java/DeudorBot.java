@@ -36,7 +36,12 @@ public class DeudorBot extends TelegramLongPollingBot {
 			String name;
 			Float amount;
 
-			SpendsSession currentSession = sessionManager.getOrDefault(update.getMessage().getChatId(), new SpendsSession());
+			Long chatId = update.getMessage().getChatId();
+
+			if (!sessionManager.containsKey(chatId)) {
+				sessionManager.put(chatId, new SpendsSession());
+			}
+			SpendsSession currentSession = sessionManager.get(update.getMessage().getChatId());
 
 			if (splittedMessage[0].charAt(0) == '/') {
 				// I'm parsing a command
@@ -69,6 +74,10 @@ public class DeudorBot extends TelegramLongPollingBot {
 							response.append(debt.toString()).append('\n');
 						}
 
+						break;
+					case "reset":
+						sessionManager.put(chatId, new SpendsSession());
+						response.append("empezamos de cero");
 						break;
 					default:
 						response.append("unrecognized command!");
