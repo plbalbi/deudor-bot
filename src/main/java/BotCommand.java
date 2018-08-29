@@ -30,7 +30,8 @@ public abstract class BotCommand {
 
 		return
 			parsedName.equals(name) &&
-			argumentCount.equals(splittedCommand.length);
+			// Substract the command name parsed string
+			argumentCount.equals(splittedCommand.length - 1);
 
 		// TODO: Count command arguments
 		// TODO: Maybe add a command type with variadic arguments
