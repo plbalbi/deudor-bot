@@ -3,7 +3,6 @@ import domain.SpendsSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,19 +112,5 @@ class SpendsSessionTest {
 			assertEquals(50, spendsSession.getBalanceOf(name));
 
 		}
-	}
-
-	@Test
-	void testSplittingBillAndSomeonePaying() {
-		spendsSession.splitBill(150, Arrays.asList("pablo", "teo", "andy"));
-		spendsSession.pay("pablo", 90);
-		spendsSession.pay("juan", 60);
-		List<Debt> debts = spendsSession.end();
-
-		for (Debt debt : debts) {
-			System.out.println(debt.toString());
-		}
-
-		assertEquals(3, debts.size());
 	}
 }
