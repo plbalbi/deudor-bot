@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import java.util.Map;
 public class DeudorBot extends TelegramLongPollingBot {
 
 	private static final Logger log = LogManager.getLogger(DeudorBot.class);
+	public static final String BOT_KEY = "636005835:AAEC7sLNcxgflZdpfDVEXYqOZicA0bXEYKQ";
+	public static final String BOT_NAME = "DeudorBot";
 	private Map<Long, SpendsSession> sessionManager;
 
 	public DeudorBot() {
@@ -29,7 +32,8 @@ public class DeudorBot extends TelegramLongPollingBot {
 			// Parse commands
 			String recievedMessage = update.getMessage().getText();
 			String[] splittedMessage = recievedMessage.split(" ");
-			Integer commandsQunatity = splittedMessage.length;
+			// Not counting command name
+			Integer argumentsQuantity = splittedMessage.length - 1;
 
 			// Debug
 			StringBuilder response = new StringBuilder();
@@ -48,27 +52,35 @@ public class DeudorBot extends TelegramLongPollingBot {
 				String command = splittedMessage[0].substring(1, splittedMessage[0].length());
 				switch (command) {
 					// /gasto quien cuanto
-					case "gasto":
+					case "spend":
+						if (argumentsQuantity < 2) {
+							response.append("Wrong number of arguments");
+							break;
+						}
 						name = splittedMessage[1];
 						amount = Float.parseFloat(splittedMessage[2]);
 
 						currentSession.spend(name, amount);
 
-						response.append("dalep");
+						response.append(String.format("%s spend %.02f", name, amount));
 						break;
 					// /puso quien cuanto
-					case "puso":
+					case "pay":
+						if (argumentsQuantity < 2) {
+							response.append("Wrong number of arguments");
+							break;
+						}
 						name = splittedMessage[1];
 						amount = Float.parseFloat(splittedMessage[2]);
 
 						currentSession.pay(name, amount);
 
-						response.append("roger that");
+						response.append(String.format("%s payed %.02f for the group", name, amount));
 						break;
-					case "liquidar":
+					case "balance":
 						List<Debt>	debts = currentSession.end();
 
-						response.append("Cuánto nos debemos?").append('\n');
+						response.append("How much do we owe each other?").append('\n');
 
 						for (Debt debt : debts) {
 							response.append(debt.toString()).append('\n');
@@ -77,10 +89,10 @@ public class DeudorBot extends TelegramLongPollingBot {
 						break;
 					case "reset":
 						sessionManager.put(chatId, new SpendsSession());
-						response.append("empezamos de cero");
+						response.append("Starting over");
 						break;
 					default:
-						response.append("unrecognized command!");
+						response.append("Unrecognized command!");
 						break;
 				}
 			}
@@ -97,10 +109,10 @@ public class DeudorBot extends TelegramLongPollingBot {
 	}
 
 	public String getBotUsername() {
-		return "DeudorBot";
+		return BOT_NAME;
 	}
 
 	public String getBotToken() {
-		return "636005835:AAEC7sLNcxgflZdpfDVEXYqOZicA0bXEYKQ";
+		return BOT_KEY;
 	}
 }
