@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,11 @@ public class DeudorBot extends TelegramLongPollingBot {
 	public DeudorBot() {
 		sessionManager = new HashMap<>();
 	}
+
+
+	// TODO: Add exception handling to float parsing
+	// TODO: Use some kind of abstraction for commands
+	// TODO: Add some kind of session dump
 
 	public void onUpdateReceived(Update update) {
 		if (update.hasMessage() && update.getMessage().hasText()) {
@@ -64,6 +70,7 @@ public class DeudorBot extends TelegramLongPollingBot {
 
 						response.append(String.format("%s spend %.02f", name, amount));
 						break;
+
 					// /puso quien cuanto
 					case "pay":
 						if (argumentsQuantity < 2) {
@@ -77,6 +84,7 @@ public class DeudorBot extends TelegramLongPollingBot {
 
 						response.append(String.format("%s payed %.02f for the group", name, amount));
 						break;
+
 					case "balance":
 						List<Debt>	debts = currentSession.end();
 
@@ -87,10 +95,33 @@ public class DeudorBot extends TelegramLongPollingBot {
 						}
 
 						break;
+
+					case "split":
+						if (argumentsQuantity < 2) {
+							response.append("Wrong number of arguments");
+							break;
+						}
+
+						List<String> splittedCommandAsList = Arrays.asList(splittedMessage);
+						// /commandName arg0 arg1 arg2 ...
+						// In this case, it should be /split 150 name0 name1...
+						amount = Float.parseFloat(splittedCommandAsList.get(1));
+						List<String> group = splittedCommandAsList.subList(2, splittedCommandAsList.size());
+
+						currentSession.splitBill(amount, group);
+
+						response.append(String.format("%.02f has been added to ", amount/group.size()));
+						for (String person: group) {
+							response.append(person).append(" ");
+						}
+
+						break;
+
 					case "reset":
 						sessionManager.put(chatId, new SpendsSession());
 						response.append("Starting over");
 						break;
+
 					default:
 						response.append("Unrecognized command!");
 						break;
