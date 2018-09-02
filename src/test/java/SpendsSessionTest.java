@@ -3,6 +3,7 @@ import domain.SpendsSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -101,5 +102,15 @@ class SpendsSessionTest {
 		assertEquals(debts.size(), 2);
 		assertTrue(debts.contains(new Debt(teo, juan, 10f)));
 		assertTrue(debts.contains(new Debt(teo, pablo, 85f)));
+	}
+
+	@Test
+	void testSplittingBillInGroupAffectsEveryonesBalance() {
+		List<String> group = Arrays.asList(juan, pablo, teo);
+		spendsSession.splitBill(150, Arrays.asList(juan, pablo, teo));
+		for (String name: group) {
+			assertEquals(50, spendsSession.getBalanceOf(name));
+
+		}
 	}
 }

@@ -70,6 +70,13 @@ public class SpendsSession {
 		return debts;
 	}
 
+	public void splitBill(float anAmount, List<String> groupMembers) {
+		float spendPerPerson = anAmount / groupMembers.size();
+		for (String person : groupMembers) {
+			spend(person, spendPerPerson);
+		}
+	}
+
 	public class Tuple<X,Y> {
 		public X first;
 		public Y second;
